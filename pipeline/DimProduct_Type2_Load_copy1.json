@@ -16,11 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "DimCompany_Loader",
+						"referenceName": "DimProduct_Loader_copy1",
 						"type": "DataFlowReference"
 					},
 					"compute": {
-						"coreCount": 8,
+						"coreCount": 32,
 						"computeType": "General"
 					},
 					"traceLevel": "Fine"
