@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"container": "dportas"
+				"container": "lea"
 			},
 			"columnDelimiter": "\t",
 			"escapeChar": "\\",
