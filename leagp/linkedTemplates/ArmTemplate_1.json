@@ -1,0 +1,827 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "leagp"
+		},
+		"trigger1_properties_typeProperties_scope": {
+			"type": "string",
+			"defaultValue": "/subscriptions/81df0e84-cab6-4a67-a0ae-b3c6c9e989e8/resourceGroups/kresgroup1/providers/Microsoft.Storage/storageAccounts/ablobstore"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/codata_file_load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"wildcardFileName": "*.txt",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "AzureSqlSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "conum",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "conum",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "coname",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "coname",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "city",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "city",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "state",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "state",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "country",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "country",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "codata_container",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "lea_company_filestore",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Delete1",
+						"type": "Delete",
+						"dependsOn": [
+							{
+								"activity": "Copy data1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataset": {
+								"referenceName": "codata_container",
+								"type": "DatasetReference",
+								"parameters": {}
+							},
+							"enableLogging": false,
+							"storeSettings": {
+								"type": "AzureBlobStorageReadSettings",
+								"recursive": true,
+								"enablePartitionDiscovery": false
+							}
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T15:05:19Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/codata_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Copy data1",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlServerSink"
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "conum",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "conum",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "coname",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "coname",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "city",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "city",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "state",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "state",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									},
+									{
+										"source": {
+											"name": "country",
+											"type": "String",
+											"physicalType": "String"
+										},
+										"sink": {
+											"name": "country",
+											"type": "String",
+											"physicalType": "varchar"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "basic1_codata",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "lea_company2",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T14:58:21Z"
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimCompany_Loader')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "codata_files",
+								"type": "DatasetReference"
+							},
+							"name": "codata"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "DimCompany",
+							"description": "Current rows in DimEmployees DW table"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "sinkNew"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "sinkInactive",
+							"description": "Close out the old version of the row"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "sinkChanges",
+							"description": "New row with changes"
+						}
+					],
+					"transformations": [
+						{
+							"name": "codataWithSurrogate"
+						},
+						{
+							"name": "DoesRowExist"
+						},
+						{
+							"name": "RowHasChanged"
+						},
+						{
+							"name": "codataWithDates"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\twildcardPaths:['*.*']) ~> codata\nsource(output(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimCompany\ncodata, DimCompany lookup(codata@conum == DimCompany@conum,\n\tmultiple: false,\n\tpickup: 'first',\n\tdesc(EndDate, true),\n\tbroadcast: 'auto')~> codataWithSurrogate\ncodataWithDates split(isNull(dimcompany),\n\tdisjoint: false) ~> DoesRowExist@(NewRow, CurrentRow)\nDoesRowExist@CurrentRow, DimCompany exists(DoesRowExist@CurrentRow@dimcompany == DimCompany@dimcompany\n\t&& DoesRowExist@CurrentRow@conum == DimCompany@conum\n\t&& DoesRowExist@CurrentRow@coname == DimCompany@coname\n\t&& DoesRowExist@CurrentRow@city == DimCompany@city\n\t&& DoesRowExist@CurrentRow@country == DimCompany@country\n\t&& coalesce(DoesRowExist@CurrentRow@state,\"\") == coalesce(DimCompany@state,\"\"),\n\tnegate:true,\n\tbroadcast: 'auto')~> RowHasChanged\ncodataWithSurrogate derive(StartDate = currentTimestamp(),\n\t\tEndDate = toTimestamp(\"9999-12-31 23:59:59\"),\n\t\tRowStatusNew = \"NEW\",\n\t\tRowStatusChange = \"CHANGE\") ~> codataWithDates\nRowHasChanged alterRow(updateIf(1==1)) ~> AlterRow1\nDoesRowExist@NewRow sink(input(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tbatchSize: 50,\n\tmapColumn(\n\t\tconum = DoesRowExist@NewRow@conum,\n\t\tconame = DoesRowExist@NewRow@coname,\n\t\tcity = DoesRowExist@NewRow@city,\n\t\tstate = DoesRowExist@NewRow@state,\n\t\tcountry = DoesRowExist@NewRow@country,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tpartitionBy('roundRobin', 4),\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> sinkNew\nAlterRow1 sink(input(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['dimcompany'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tbatchSize: 50,\n\tmapColumn(\n\t\tdimcompany,\n\t\tEndDate = StartDate\n\t),\n\tpartitionBy('roundRobin', 4),\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError') ~> sinkInactive\nRowHasChanged sink(input(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tconum = DoesRowExist@CurrentRow@conum,\n\t\tconame = DoesRowExist@CurrentRow@coname,\n\t\tcity = DoesRowExist@CurrentRow@city,\n\t\tstate = DoesRowExist@CurrentRow@state,\n\t\tcountry = DoesRowExist@CurrentRow@country,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3,\n\terrorHandlingOption: 'stopOnFirstError') ~> sinkChanges"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimProduct_Loader_copy1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "codata_files",
+								"type": "DatasetReference"
+							},
+							"name": "codata"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "DimCompany",
+							"description": "Current rows in DimEmployees DW table"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "sinkNew"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "sinkInactive",
+							"description": "Close out the old version of the row"
+						},
+						{
+							"dataset": {
+								"referenceName": "DimCompany",
+								"type": "DatasetReference"
+							},
+							"name": "sinkChanges",
+							"description": "New row with changes"
+						}
+					],
+					"transformations": [
+						{
+							"name": "codataWithSurrogate"
+						},
+						{
+							"name": "DoesRowExist"
+						},
+						{
+							"name": "RowHasChanged"
+						},
+						{
+							"name": "codataWithDates"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\twildcardPaths:['*.*']) ~> codata\nsource(output(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> DimCompany\ncodata, DimCompany lookup(codata@conum == DimCompany@conum,\n\tmultiple: false,\n\tpickup: 'first',\n\tdesc(EndDate, true),\n\tbroadcast: 'auto')~> codataWithSurrogate\ncodataWithDates split(isNull(dimcompany),\n\tdisjoint: false) ~> DoesRowExist@(NewRow, CurrentRow)\nDoesRowExist@CurrentRow, DimCompany exists(DoesRowExist@CurrentRow@dimcompany == DimCompany@dimcompany\n\t&& DoesRowExist@CurrentRow@conum == DimCompany@conum\n\t&& DoesRowExist@CurrentRow@coname == DimCompany@coname\n\t&& DoesRowExist@CurrentRow@city == DimCompany@city\n\t&& DoesRowExist@CurrentRow@country == DimCompany@country\n\t&& coalesce(DoesRowExist@CurrentRow@state,\"\") == coalesce(DimCompany@state,\"\"),\n\tnegate:true,\n\tbroadcast: 'auto')~> RowHasChanged\ncodataWithSurrogate derive(StartDate = currentTimestamp(),\n\t\tEndDate = toTimestamp(\"9999-12-31 23:59:59\"),\n\t\tRowStatusNew = \"NEW\",\n\t\tRowStatusChange = \"CHANGE\") ~> codataWithDates\nRowHasChanged alterRow(updateIf(1==1)) ~> AlterRow1\nDoesRowExist@NewRow sink(input(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tbatchSize: 50,\n\tmapColumn(\n\t\tconum = DoesRowExist@NewRow@conum,\n\t\tconame = DoesRowExist@NewRow@coname,\n\t\tcity = DoesRowExist@NewRow@city,\n\t\tstate = DoesRowExist@NewRow@state,\n\t\tcountry = DoesRowExist@NewRow@country,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tpartitionBy('roundRobin', 4),\n\tsaveOrder: 1,\n\terrorHandlingOption: 'stopOnFirstError') ~> sinkNew\nAlterRow1 sink(input(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:true,\n\tupsertable:false,\n\tkeys:['dimcompany'],\n\tskipKeyWrites:true,\n\tformat: 'table',\n\tbatchSize: 50,\n\tmapColumn(\n\t\tdimcompany,\n\t\tEndDate = StartDate\n\t),\n\tpartitionBy('roundRobin', 4),\n\tsaveOrder: 2,\n\terrorHandlingOption: 'stopOnFirstError') ~> sinkInactive\nRowHasChanged sink(input(\n\t\tdimcompany as integer,\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tStartDate as timestamp,\n\t\tEndDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tconum = DoesRowExist@CurrentRow@conum,\n\t\tconame = DoesRowExist@CurrentRow@coname,\n\t\tcity = DoesRowExist@CurrentRow@city,\n\t\tstate = DoesRowExist@CurrentRow@state,\n\t\tcountry = DoesRowExist@CurrentRow@country,\n\t\tStartDate,\n\t\tEndDate\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\tsaveOrder: 3,\n\terrorHandlingOption: 'stopOnFirstError') ~> sinkChanges"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/custAddressJoins')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SalesLT_Customer",
+								"type": "DatasetReference"
+							},
+							"name": "custTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "SalesLT_CustomerAddress",
+								"type": "DatasetReference"
+							},
+							"name": "custAddTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "LTSales_Address",
+								"type": "DatasetReference"
+							},
+							"name": "addTable"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "lea_CustAddress",
+								"type": "DatasetReference"
+							},
+							"name": "sink"
+						},
+						{
+							"dataset": {
+								"referenceName": "leaCustShippingTable",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "Join2"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "ConditionalSplit1"
+						},
+						{
+							"name": "AlterRow2"
+						}
+					],
+					"script": "source(output(\n\t\tCustomerID as integer,\n\t\tNameStyle as boolean,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tCompanyName as string,\n\t\tSalesPerson as string,\n\t\tEmailAddress as string,\n\t\tPhone as string,\n\t\tPasswordHash as string,\n\t\tPasswordSalt as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> custTable\nsource(output(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> custAddTable\nsource(output(\n\t\tAddressID as integer,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> addTable\nConditionalSplit1@MainOffice, custTable join(ConditionalSplit1@MainOffice@CustomerID == custTable@CustomerID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nJoin1, addTable join(ConditionalSplit1@MainOffice@AddressID == addTable@AddressID,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join2\nJoin2 alterRow(upsertIf(1==1)) ~> AlterRow1\ncustAddTable split(AddressType == \"Main Office\",\n\tAddressType == \"Shipping\",\n\tdisjoint: false) ~> ConditionalSplit1@(MainOffice, Shipping)\nConditionalSplit1@Shipping alterRow(upsertIf(1==1)) ~> AlterRow2\nAlterRow1 sink(input(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tTitle as string,\n\t\tFirstName as string,\n\t\tMiddleName as string,\n\t\tLastName as string,\n\t\tSuffix as string,\n\t\tAddressType as string,\n\t\tAddressLine1 as string,\n\t\tAddressLine2 as string,\n\t\tCity as string,\n\t\tStateProvince as string,\n\t\tCountryRegion as string,\n\t\tPostalCode as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['CustomerID','AddressID'],\n\tformat: 'table',\n\tmapColumn(\n\t\tCustomerID = ConditionalSplit1@MainOffice@CustomerID,\n\t\tAddressID = ConditionalSplit1@MainOffice@AddressID,\n\t\tTitle,\n\t\tFirstName,\n\t\tMiddleName,\n\t\tLastName,\n\t\tSuffix,\n\t\tAddressType,\n\t\tAddressLine1,\n\t\tAddressLine2,\n\t\tCity,\n\t\tStateProvince,\n\t\tCountryRegion,\n\t\tPostalCode\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink\nAlterRow2 sink(input(\n\t\tCustomerID as integer,\n\t\tAddressID as integer,\n\t\tAddressType as string,\n\t\trowguid as string,\n\t\tModifiedDate as timestamp\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['CustomerID','AddressID'],\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/stateNameJoins')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "basic1_codata",
+								"type": "DatasetReference"
+							},
+							"name": "codata"
+						},
+						{
+							"dataset": {
+								"referenceName": "states",
+								"type": "DatasetReference"
+							},
+							"name": "states"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "lea_company",
+								"type": "DatasetReference"
+							},
+							"name": "sink1"
+						}
+					],
+					"transformations": [
+						{
+							"name": "usaFilter"
+						},
+						{
+							"name": "Join1"
+						},
+						{
+							"name": "AlterRow1"
+						}
+					],
+					"script": "source(output(\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> codata\nsource(output(\n\t\tstatecode as string,\n\t\tstatename as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table') ~> states\ncodata filter(country == \"USA\") ~> usaFilter\nstates, usaFilter join(statecode == state,\n\tjoinType:'inner',\n\tbroadcast: 'auto')~> Join1\nJoin1 alterRow(upsertIf(1==1)) ~> AlterRow1\nAlterRow1 sink(input(\n\t\tconum as string,\n\t\tconame as string,\n\t\tcity as string,\n\t\tstate as string,\n\t\tcountry as string,\n\t\tstatename as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['conum'],\n\tformat: 'table',\n\tmapColumn(\n\t\tconum,\n\t\tconame,\n\t\tcity,\n\t\tstate,\n\t\tcountry,\n\t\tstatename\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimCompany_Type2_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DimCompany_Loader",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"codata": {},
+									"DimCompany": {},
+									"sinkNew": {},
+									"sinkInactive": {},
+									"sinkChanges": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 32,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T21:52:32Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DimCompany_Loader')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimProductCategory_Type2_Load')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DimCompany_Loader",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"codata": {},
+									"DimCompany": {},
+									"sinkNew": {},
+									"sinkInactive": {},
+									"sinkChanges": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T21:52:32Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DimCompany_Loader')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimProduct_Type2_Load_copy1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "DimCompany_Loader",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"codata": {},
+									"DimCompany": {},
+									"sinkNew": {},
+									"sinkInactive": {},
+									"sinkChanges": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T21:52:32Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/DimCompany_Loader')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/codata_pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "stateNameJoins",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"codata": {},
+									"states": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 16,
+								"computeType": "MemoryOptimized"
+							},
+							"traceLevel": "Fine"
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T09:53:57Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/stateNameJoins')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/cust_join_pipeline')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "custAddressJoins",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"custTable": {},
+									"custAddTable": {},
+									"addTable": {},
+									"sink": {},
+									"sink1": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 16,
+								"computeType": "MemoryOptimized"
+							},
+							"traceLevel": "Coarse"
+						}
+					}
+				],
+				"annotations": [],
+				"lastPublishTime": "2021-03-11T10:31:19Z"
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/custAddressJoins')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/trigger1')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "codata_file_load",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "BlobEventsTrigger",
+				"typeProperties": {
+					"blobPathBeginsWith": "/codata/blobs/",
+					"ignoreEmptyBlobs": true,
+					"scope": "[parameters('trigger1_properties_typeProperties_scope')]",
+					"events": [
+						"Microsoft.Storage.BlobCreated"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/codata_file_load')]"
+			]
+		}
+	]
+}
