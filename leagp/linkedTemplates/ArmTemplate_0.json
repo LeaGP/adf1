@@ -18,10 +18,6 @@
 		"datalab3kubrick_service_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'datalab3kubrick_service'"
-		},
-		"sql_datalab3_kubrick_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'sql_datalab3_kubrick'"
 		}
 	},
 	"variables": {
@@ -68,16 +64,10 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/sql_datalab3_kubrick')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/DimProductCategoryNew_Type2_Load')]",
+			"type": "Microsoft.DataFactory/factories/templates",
 			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('sql_datalab3_kubrick_connectionString')]"
-				}
-			},
+			"properties": {},
 			"dependsOn": []
 		},
 		{
@@ -86,7 +76,7 @@
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "sql_datalab3_kubrick",
+					"referenceName": "AzureSqlDatabase1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
@@ -134,7 +124,7 @@
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/sql_datalab3_kubrick')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		},
 		{
@@ -983,340 +973,49 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/cardcust_pipeline')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/ProductCategory')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
 					{
-						"name": "Copy data1",
-						"type": "Copy",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "7.00:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
-								}
-							},
-							"sink": {
-								"type": "SqlServerSink"
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "CLIENTNUM",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "CLIENTNUM",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Attrition_Flag",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Attrition_Flag",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Customer_Age",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Customer_Age",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Gender",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Gender",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Dependent_count",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Dependent_count",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Education_Level",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Education_Level",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Marital_Status",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Marital_Status",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Income_Category",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Income_Category",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Card_Category",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Card_Category",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Months_on_book",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Months_on_book",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Total_Relationship_Count",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Total_Relationship_Count",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Months_Inactive_12_mon",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Months_Inactive_12_mon",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Contacts_Count_12_mon",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Contacts_Count_12_mon",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Credit_Limit",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Credit_Limit",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Total_Revolving_Bal",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Total_Revolving_Bal",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Avg_Open_To_Buy",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Avg_Open_To_Buy",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Total_Amt_Chng_Q4_Q1",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Total_Amt_Chng_Q4_Q1",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Total_Trans_Amt",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Total_Trans_Amt",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Total_Trans_Ct",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Total_Trans_Ct",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Total_Ct_Chng_Q4_Q1",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Total_Ct_Chng_Q4_Q1",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									},
-									{
-										"source": {
-											"name": "Avg_Utilization_Ratio",
-											"type": "String",
-											"physicalType": "String"
-										},
-										"sink": {
-											"name": "Avg_Utilization_Ratio",
-											"type": "String",
-											"physicalType": "nvarchar"
-										}
-									}
-								],
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "cardcust",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "cardcust_output",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+						"name": "ProductCategoryID",
+						"type": "int",
+						"precision": 10
 					},
 					{
-						"name": "Wait1",
-						"type": "Wait",
-						"dependsOn": [
-							{
-								"activity": "Copy data1",
-								"dependencyConditions": [
-									"Failed"
-								]
-							}
-						],
-						"userProperties": [],
-						"typeProperties": {
-							"waitTimeInSeconds": 1
-						}
+						"name": "ParentProductCategoryID",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "Name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "rowguid",
+						"type": "uniqueidentifier"
+					},
+					{
+						"name": "ModifiedDate",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
 					}
 				],
-				"annotations": [],
-				"lastPublishTime": "2021-03-11T09:53:58Z"
+				"typeProperties": {
+					"schema": "SalesLT",
+					"table": "ProductCategory"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/cardcust')]",
-				"[concat(variables('factoryId'), '/datasets/cardcust_output')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
 			]
 		}
 	]

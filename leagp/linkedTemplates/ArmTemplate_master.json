@@ -19,10 +19,6 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'datalab3kubrick_service'"
 		},
-		"sql_datalab3_kubrick_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'sql_datalab3_kubrick'"
-		},
 		"trigger1_properties_typeProperties_scope": {
 			"type": "string",
 			"defaultValue": "/subscriptions/81df0e84-cab6-4a67-a0ae-b3c6c9e989e8/resourceGroups/kresgroup1/providers/Microsoft.Storage/storageAccounts/ablobstore"
@@ -62,9 +58,6 @@
 					},
 					"datalab3kubrick_service_connectionString": {
 						"value": "[parameters('datalab3kubrick_service_connectionString')]"
-					},
-					"sql_datalab3_kubrick_connectionString": {
-						"value": "[parameters('sql_datalab3_kubrick_connectionString')]"
 					}
 				}
 			},

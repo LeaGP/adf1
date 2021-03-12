@@ -14,9 +14,6 @@
 		"datalab3kubrick_service_connectionString": {
 			"value": ""
 		},
-		"sql_datalab3_kubrick_connectionString": {
-			"value": ""
-		},
 		"trigger1_properties_typeProperties_scope": {
 			"value": "/subscriptions/81df0e84-cab6-4a67-a0ae-b3c6c9e989e8/resourceGroups/kresgroup1/providers/Microsoft.Storage/storageAccounts/ablobstore"
 		}
