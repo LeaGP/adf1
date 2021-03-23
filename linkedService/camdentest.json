@@ -1,0 +1,13 @@
+{
+	"name": "camdentest",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "camden test sql database",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "integrated security=False;data source=ec2-35-176-213-89.eu-west-2.compute.amazonaws.com;initial catalog=camdenstats;user id=camdenuser",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkxFQUdQXzk5NDI3ZTVlLWRhNDMtNGEwMy05MzZjLWExMGJiNGI0YTZmOSINCn0="
+		}
+	}
+}
